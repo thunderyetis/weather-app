@@ -33,12 +33,13 @@ function App() {
       if (!geoData.results || geoData.results.length === 0){
         throw new Error('City not found');
       }
-      const {latitude, longitude, name: cityName} = geoData.results[0];
+      const {latitude, longitude, name: cityName, admin1: state} = geoData.results[0];
       const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit`);
       const weatherData = await weatherResponse.json();
     
       setWeather({
         city: cityName,
+        state: state,
         temperature: weatherData.current.temperature_2m,
         code: weatherData.current.weather_code,
       });
@@ -50,7 +51,7 @@ function App() {
   }
 
   return (
-    <div>
+    <div className='app-container'>
       <h1>Weather App</h1>
       <input
         type="text"
@@ -65,8 +66,8 @@ function App() {
       {error && <p style={{color: 'red' }}>{error}</p>}
 
       {weather && !isLoading && (
-        <div>
-          <h2>{weather.city}</h2>
+        <div className='weather-result'>
+          <h2>{weather.city}, {weather.state}</h2>
           <p>{weather.temperature}°F</p>
           <p>{getWeatherDescription(weather.code)}</p>
         </div>
