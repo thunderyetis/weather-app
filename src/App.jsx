@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import './App.css';
 
-function getWeatherDescription(code) {
+function getWeatherInfo(code) {
   const weatherCodes = {
-    0: 'Clear sky',
-    1: 'Mainly clear',
-    2: 'Partly cloudy',
-    3: 'Overcast',
-    45: 'Foggy',
-    61: 'Light rain',
-    63: 'Moderate rain',
-    65: 'Heavy rain',
-    71: 'Light snow',
-    80: 'Rain showers',
-    95: 'Thunderstorm',
+    0: {desc: 'Clear sky', icon: '☀️'},
+    1: {desc: 'Mainly clear', icon: '🌤️'},
+    2: {desc: 'Partly cloudy', icon: '⛅️'},
+    3: {desc: 'Overcast', icon: '☁️'},
+    45: {desc: 'Foggy', icon: '🌫️'},
+    61: {desc: 'Light rain', icon: '🌧️'},
+    63: {desc: 'Moderate rain', icon: '🌧️'},
+    65: {desc: 'Heavy rain', icon: '🌧️'},
+    71: {desc: 'Light snow', icon: '🌨️'},
+    80: {desc: 'Rain showers', icon: '🌦️'},
+    95: {desc: 'Thunderstorm', icon: '⛈️'}
   };
-  return weatherCodes[code] || 'Unknown';
+  return weatherCodes[code] || {desc: 'Unknown', icon: '🌡️'};
 }
 
 function App() {
@@ -34,13 +34,16 @@ function App() {
         throw new Error('City not found');
       }
       const {latitude, longitude, name: cityName, admin1: state} = geoData.results[0];
-      const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,weather_code&temperature_unit=fahrenheit`);
+      const weatherResponse = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,weather_code&temperature_unit=fahrenheit&wind_speed_unit=mph`);
       const weatherData = await weatherResponse.json();
     
       setWeather({
         city: cityName,
         state: state,
         temperature: weatherData.current.temperature_2m,
+        feelsLike: weatherData.current.apparent_temperature,
+        humidity: weatherData.current.relative_humidity_2m,
+        windSpeed: weatherData.current.wind_speed_10m,
         code: weatherData.current.weather_code,
       });
     } catch (err){
@@ -68,8 +71,15 @@ function App() {
       {weather && !isLoading && (
         <div className='weather-result'>
           <h2>{weather.city}, {weather.state}</h2>
+          <div style={{fontSize: '3rem', margin: '10px 0'}}>
+            {getWeatherInfo(weather.code).icon}
+          </div>
+          <p>{getWeatherInfo(weather.code).desc}</p>
           <p>{weather.temperature}°F</p>
           <p>{getWeatherDescription(weather.code)}</p>
+          <p>Feels Like: {weather.feelsLike}°F</p>
+          <p>Humidity: {weather.humidity}%</p>
+          <p>Wind Speed: {weather.windSpeed} mph</p>
         </div>
       )}
     </div>
