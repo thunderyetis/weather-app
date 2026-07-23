@@ -1,22 +1,6 @@
 import { useState } from 'react';
+import WeatherCard from './components/WeatherCard';
 import './App.css';
-
-function getWeatherInfo(code) {
-  const weatherCodes = {
-    0: {desc: 'Clear sky', icon: '☀️'},
-    1: {desc: 'Mainly clear', icon: '🌤️'},
-    2: {desc: 'Partly cloudy', icon: '⛅️'},
-    3: {desc: 'Overcast', icon: '☁️'},
-    45: {desc: 'Foggy', icon: '🌫️'},
-    61: {desc: 'Light rain', icon: '🌧️'},
-    63: {desc: 'Moderate rain', icon: '🌧️'},
-    65: {desc: 'Heavy rain', icon: '🌧️'},
-    71: {desc: 'Light snow', icon: '🌨️'},
-    80: {desc: 'Rain showers', icon: '🌦️'},
-    95: {desc: 'Thunderstorm', icon: '⛈️'}
-  };
-  return weatherCodes[code] || {desc: 'Unknown', icon: '🌡️'};
-}
 
 function App() {
   const [city, setCity] = useState('');
@@ -68,20 +52,7 @@ function App() {
 
       {error && <p style={{color: 'red' }}>{error}</p>}
 
-      {weather && !isLoading && (
-        <div className='weather-result'>
-          <h2>{weather.city}, {weather.state}</h2>
-          <div style={{fontSize: '3rem', margin: '10px 0'}}>
-            {getWeatherInfo(weather.code).icon}
-          </div>
-          <p>{getWeatherInfo(weather.code).desc}</p>
-          <p>{weather.temperature}°F</p>
-          <p>{getWeatherDescription(weather.code)}</p>
-          <p>Feels Like: {weather.feelsLike}°F</p>
-          <p>Humidity: {weather.humidity}%</p>
-          <p>Wind Speed: {weather.windSpeed} mph</p>
-        </div>
-      )}
+      {weather && !isLoading && <WeatherCard weather={weather} />}
     </div>
   );
 }
