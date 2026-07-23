@@ -24,16 +24,15 @@
 
 # To run this project locally on your machine:
 
+```
 1. Clone the Repository
-#```bash
 git clone https://github.com/thunderyetis/weather-app.git
 cd weather-app
 
 2. Install Dependencies
-#```bash
 npm install
 
 3. Start the local development server
-#```bash
 npm run dev
+```
 
