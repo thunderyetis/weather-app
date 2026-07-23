@@ -25,7 +25,7 @@
 # To run this project locally on your machine:
 
 1. Clone the Repository
-```bash
+#```bash
 git clone https://github.com/thunderyetis/weather-app.git
 cd weather-app
 
